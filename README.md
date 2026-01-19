@@ -1,0 +1,1 @@
+This Repo contains my fulltack development using go & react from base knowledge until study case
