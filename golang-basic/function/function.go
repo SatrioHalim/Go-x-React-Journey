@@ -33,4 +33,8 @@ func main() {
 	fmt.Println(tambah(3,5)) // output: 8
 	fmt.Println(jumlahAngka(1,2,3,4,5)) // output: 15
 	sapa("Budi") // output: Halo, Budi
+	// anonymous function
+	func(msg string) {
+		fmt.Println("Pesan dari anonymous function:", msg)
+	}("Halo sobat santuy")
 }
