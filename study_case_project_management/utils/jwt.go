@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// generate token jwt
 func generateToken(userID int64, role,email string, publicID uuid.UUID)(string,error){
 	secret := config.AppConfig.JWTSecret
 	duration, _ := time.ParseDuration(config.AppConfig.JWTExpire)
@@ -24,5 +23,3 @@ func generateToken(userID int64, role,email string, publicID uuid.UUID)(string,e
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claims)
 	return token.SignedString([]byte(secret))
 }
-
-// generate refresh token
