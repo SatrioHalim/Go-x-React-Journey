@@ -21,7 +21,7 @@ type Response struct {
 }
 
 // dipake sbagai informasi sukses yg masuk ke server
-func success(c fiber.Ctx, message string, data interface{}) error{
+func Success(c fiber.Ctx, message string, data interface{}) error{
 	return c.Status(fiber.StatusOK).JSON(Response{
 		Status: "Success",
 		ResponseCode: fiber.StatusOK,
@@ -30,7 +30,7 @@ func success(c fiber.Ctx, message string, data interface{}) error{
 	})
 }
 
-func created(c fiber.Ctx, message string, data interface{}) error{
+func Created(c fiber.Ctx, message string, data interface{}) error{
 	return c.Status(fiber.StatusCreated).JSON(Response{
 		Status: "Created",
 		ResponseCode: fiber.StatusCreated,
@@ -39,22 +39,20 @@ func created(c fiber.Ctx, message string, data interface{}) error{
 	})
 }
 
-func badRequest(c fiber.Ctx, message string, data interface{}, err string) error{
+func BadRequest(c fiber.Ctx, message string, err string) error{
 	return c.Status(fiber.StatusBadRequest).JSON(Response{
 		Status: "Error Bad Request",
 		ResponseCode: fiber.StatusBadRequest,
 		Message: message,
-		Data: data,
 		Error: err,
 	})
 }
 
-func notFound(c fiber.Ctx, message string, data interface{},err string) error{
+func NotFound(c fiber.Ctx, message string, err string) error{
 	return c.Status(fiber.StatusNotFound).JSON(Response{
 		Status: "Error Not Found",
 		ResponseCode: fiber.StatusNotFound,
 		Message: message,
-		Data: data,
 		Error: err,
 	})
 }
