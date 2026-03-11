@@ -1,6 +1,7 @@
 package controllers
 
 import (
+
 	"github.com/SatrioHalim/Go-x-React-Journey/models"
 	"github.com/SatrioHalim/Go-x-React-Journey/services"
 	"github.com/SatrioHalim/Go-x-React-Journey/utils"
@@ -29,4 +30,31 @@ func (c *UserController) Register(ctx fiber.Ctx) error {
 	var userResp models.UserResponse
 	_ = copier.Copy(&userResp,&user)
 	return utils.Success(ctx,"Register Success",userResp)
+}
+
+func (c *UserController) Login(ctx fiber.Ctx) error {
+	var body struct {
+		Email string `json:"email"`
+		Password string `json:"password"`
+	}
+	if err := ctx.Bind().Body(&body); err != nil {
+		return utils.BadRequest(ctx,"invalid request",err.Error())
+	}
+
+	user,err := c.service.Login(body.Email,body.Password)
+	if err != nil {
+		return utils.Unauthorized(ctx,"Login Failed",err.Error())
+	}
+
+	token , _ := utils.GenerateToken(user.InternalID,user.Role,user.Email,user.PublicID)
+	refreshToken, _ := utils.GenerateRefreshToken(user.InternalID)
+
+	var userResp models.UserResponse
+	_ = copier.Copy(&userResp,&user)
+
+	return utils.Success(ctx,"Login Successful",fiber.Map{
+		"access_token": token,
+		"refresh_token": refreshToken,
+		"user": userResp, 
+	})
 }
