@@ -29,7 +29,7 @@ type Config struct {
 	JWTExpire string
 }
 
-func loadEnv(){
+func LoadEnv(){
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("No .env file found.")
@@ -56,7 +56,7 @@ func getEnv(key string, fallback string) string {
 	}
 }
 
-func connectDB(){
+func ConnectDB(){
 	cfg := AppConfig
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname= %s sslmode=disable", cfg.DBHost, cfg.DBPort,cfg.DBUser,cfg.DBPassword,cfg.DBName)
