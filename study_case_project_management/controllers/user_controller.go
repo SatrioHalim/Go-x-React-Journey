@@ -58,3 +58,18 @@ func (c *UserController) Login(ctx fiber.Ctx) error {
 		"user": userResp, 
 	})
 }
+
+func (c *UserController) GetUser(ctx fiber.Ctx) error {
+	id := ctx.Params("id")
+	user,err := c.service.GetByPublicID(id)
+	if err != nil {
+		return utils.NotFound(ctx,"Data not found",err.Error())
+	}
+
+	var userResp models.UserResponse
+	err = copier.Copy(&userResp,&user)
+	if err != nil {
+		return utils.BadRequest(ctx,"Internal server error",err.Error())
+	}
+	return utils.Success(ctx,"Data found successfully",userResp)
+}
