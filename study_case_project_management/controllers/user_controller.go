@@ -8,6 +8,7 @@ import (
 	"github.com/SatrioHalim/Go-x-React-Journey/services"
 	"github.com/SatrioHalim/Go-x-React-Journey/utils"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -108,4 +109,34 @@ func (c *UserController) GetUserPagination(ctx fiber.Ctx) error {
 	}
 
 	return utils.SuccessPagination(ctx,"Data found",userResp,meta)
+}
+
+func (c *UserController) UpdateUser(ctx fiber.Ctx) error {
+	id := ctx.Params("id")
+	publicID, err := uuid.Parse(id)
+	if err != nil {
+		return utils.BadRequest(ctx, "Invalid ID Format",err.Error())
+	} 
+
+	var user models.User
+	if err := ctx.Bind().Body(&user); err != nil {
+		return utils.BadRequest(ctx, "Failed parsing data",err.Error())
+	}
+
+	user.PublicID = publicID
+	if err := c.service.Update(&user); err != nil {
+		return utils.BadRequest(ctx, "Failed update data",err.Error())
+	}
+
+	userUpdated, err := c.service.GetByPublicID(id)
+	if err != nil {
+		utils.InternalServerError(ctx, "Failed fetch data",err.Error())
+	}
+
+	var userResp models.UserResponse
+	err = copier.Copy(&userResp,&userUpdated)
+	if err != nil {
+		return utils.InternalServerError(ctx, "Error parsing data",err.Error())
+	}
+	return utils.Success(ctx, "Update user successfully",userResp)
 }

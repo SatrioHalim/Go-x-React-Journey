@@ -96,9 +96,18 @@ func NotFound(c fiber.Ctx, message string, err string) error{
 }
 
 func Unauthorized(c fiber.Ctx, message string, err string) error{
-	return c.Status(fiber.StatusUnauthorized).JSON(Response{
+	return c.Status(fiber.StatusInternalServerError).JSON(Response{
 		Status: "Error Unauthorized",
 		ResponseCode: fiber.StatusUnauthorized,
+		Message: message,
+		Error: err,
+	})
+}
+
+func InternalServerError(c fiber.Ctx, message string, err string) error{
+	return c.Status(fiber.StatusInternalServerError).JSON(Response{
+		Status: "Internal Server Error",
+		ResponseCode: fiber.StatusInternalServerError,
 		Message: message,
 		Error: err,
 	})
