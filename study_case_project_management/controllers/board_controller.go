@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 
 	"github.com/SatrioHalim/Go-x-React-Journey/models"
 	"github.com/SatrioHalim/Go-x-React-Journey/services"
@@ -100,4 +102,41 @@ func (c *BoardController) RemoveBoardMembers(ctx fiber.Ctx) error{
 	}
 	
 	return utils.Success(ctx,"Members removed successfully",nil)
+}
+
+func (c *BoardController) GetMyBoardPaginate(ctx fiber.Ctx) error {
+	claims, ok := ctx.Locals("user").(jwt.MapClaims)
+	if !ok {
+		return utils.Unauthorized(ctx, "Unauthorized", "Invalid or missing token claims")
+	}
+	userID, ok := claims["pub_id"].(string)
+	if !ok {
+		return utils.BadRequest(ctx, "Invalid token", "pub_id claim missing or invalid")
+	}
+
+	// parameter kedua ctx.query itu buat default value, kalau misal querynya gak ada, maka akan pakai default value tersebut
+	page , _ := strconv.Atoi(ctx.Query("page","1"))
+	limit, _ := strconv.Atoi(ctx.Query("limit","10"))
+	offset := (page - 1) * limit
+	filter := ctx.Query("filter","")
+	sort := ctx.Query("sort","")
+
+	boards, total, err := c.service.GetAllByUserPaginate(userID,filter,sort,limit,offset)
+	if err != nil {
+		return utils.InternalServerError(ctx,"Failed to fetch board data",err.Error())
+	}
+	meta := utils.PaginationMeta{
+		Page: page,
+		Limit: limit,
+		Total: int(total),
+		TotalPage: int(math.Ceil(float64(total) / float64(limit))),
+		Sort: sort,
+	}
+
+	if len(boards) == 0 {
+		return utils.SuccessPagination(ctx,"No boards yet, Add your first board!",boards,meta)
+	} 
+
+	return utils.SuccessPagination(ctx, "Board Data fetch successfully", boards,meta)
+	
 }
