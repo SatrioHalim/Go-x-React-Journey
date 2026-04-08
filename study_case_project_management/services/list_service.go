@@ -49,6 +49,9 @@ func (s *listService) GetByBoardID(boardPublicID string)(*ListWithOrder,error){
 	if err != nil {
 		return nil, errors.New("Failed to get list order :" + err.Error())
 	}
+	if len(position) == 0{
+		return nil,errors.New("List position not found")
+	}
 
 	lists, err := s.listRepo.FindByBoardID(boardPublicID)
 	if err != nil{
@@ -62,8 +65,6 @@ func (s *listService) GetByBoardID(boardPublicID string)(*ListWithOrder,error){
 		Position: position,
 		Lists: orderedList,
 	}, nil
-
-
 }
 
 func (s *listService) GetByID(id uint)(*models.List,error){
