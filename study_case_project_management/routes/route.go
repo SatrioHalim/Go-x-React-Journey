@@ -51,4 +51,5 @@ func Setup(app *fiber.App,
 	// Card routes
 	cardGroup := api.Group("/cards")
 	cardGroup.Post("/",cc.CreateCard)
+	cardGroup.Put("/:id",cc.UpdateCard)
 }
