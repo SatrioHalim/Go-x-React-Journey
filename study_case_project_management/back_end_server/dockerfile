@@ -1,17 +1,20 @@
 # Build stage
-FROM golang:1.22-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
+# Install git (kadang dibutuhin dependency)
+RUN apk add --no-cache git
+
 # Copy dependency dulu (biar cache kepake)
 COPY go.mod go.sum ./
-RUN go mod tidy
+RUN go mod download
 
 # Copy semua source code
 COPY . .
 
 # Build binary
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # Run stage
 FROM alpine:latest
@@ -19,6 +22,7 @@ FROM alpine:latest
 WORKDIR /root/
 
 COPY --from=builder /app/main .
+COPY --from=builder /app/database ./database
 
 EXPOSE 3000
 
