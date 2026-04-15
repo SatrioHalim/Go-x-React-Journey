@@ -9,12 +9,17 @@ import (
 	"github.com/SatrioHalim/Go-x-React-Journey/repositories"
 	"github.com/SatrioHalim/Go-x-React-Journey/routes"
 	"github.com/SatrioHalim/Go-x-React-Journey/services"
+	"github.com/SatrioHalim/Go-x-React-Journey/utils"
 	"github.com/gofiber/fiber/v3"
 )
 
 func main() {
 	config.LoadEnv()
 	config.ConnectDB()
+	log.Println("Current environment: ",config.AppConfig.Env)
+	if config.AppConfig.Env == "production" {
+		utils.RunMigration() // kalau pake docker	
+	}
 
 	seed.SeedAdmin()
 	app := fiber.New()
