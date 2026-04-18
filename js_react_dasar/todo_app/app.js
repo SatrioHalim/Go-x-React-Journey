@@ -22,6 +22,54 @@ function addTask(){
     };
 
     tasks.push(newTask);
-    document.getElementById("task-title").value = ""
-    localStorage.setItem("tasks",JSON.stringify(tasks))
+    document.getElementById("task-title").value = "";
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+
+    renderTask();
 }
+
+function renderTask(){
+
+    taskList.innerHTML = "";
+    if (tasks.length == 0){
+        const li = document.createElement("li");
+        li.classList.add("tasks-list-item");
+        li.innerHTML = `
+        <div class="task">
+            <div class="task-title">
+                No activity yet
+            </div>
+        </div>
+        `;
+        taskList.appendChild(li);
+        return;
+    }
+
+
+    tasks.forEach((task,index)=>{
+        const li = document.createElement("li");
+        li.classList.add("tasks-list-item")
+        if (task.checked == true){
+            li.classList.add("checked")
+        }
+        li.innerHTML = `
+            <div class = "task">
+                <div>
+                    <input type="checkbox" onchange="checkTask(${index})" id="checkTask(${index})" ${task.checked} ? "checked=true" : ""/>
+                </div>
+                <div class = "task-title">
+                    ${task.title}
+                </div>
+                <button class ="button" onclick="deleteTask(${index})">Delete</button>
+            </div>
+        `;
+        li.id = `task${index}`;
+        taskList.appendChild(li)
+    });
+}
+
+function main(){
+    renderTask();
+}
+
+main();
