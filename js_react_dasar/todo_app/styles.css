@@ -80,6 +80,7 @@ html,body {
     flex: 1;
 }
 
-.task-list-item.checked{
+.tasks-list-item.checked > .task,
+.tasks-list-item.checked .task{
     background-color: #d4edda;
 }
